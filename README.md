@@ -1,6 +1,6 @@
 # DemoVoz (listo para GitHub + Vercel + Neon + Google Gemini)
 
-Generador automático de vídeos tutoriales en español con gráficos animados 16:9, narración con **Google Gemini** (`gemini-2.5-flash`, `gemini-2.5-pro` y `gemini-2.5-flash-preview-tts`), exportación MP4 con audio y persistencia en **PostgreSQL en Neon**.
+Generador automático de vídeos tutoriales en español con gráficos animados 16:9, narración con **Google Gemini** (`gemini-3.8-flash`, `gemini-4-carbon` y `gemini-3.8-flash-tts`), exportación MP4 con audio y persistencia en **PostgreSQL en Neon**.
 
 ## Despliegue en GitHub y Vercel (paso a paso)
 

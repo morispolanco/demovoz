@@ -1,6 +1,6 @@
 const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
-const ALLOWED_MODELS = ['gemini-2.5-flash', 'gemini-2.5-pro'];
+const ALLOWED_MODELS = ['gemini-3.8-flash', 'gemini-4-carbon'];
 const ALLOWED_VOICES = ['Aoede', 'Kore', 'Puck', 'Charon', 'Fenrir', 'Leda', 'Orus', 'Zephyr'];
 
 function countWords(text) {
@@ -137,7 +137,7 @@ async function generateScriptWithGemini({ apiKey, appName, description, cta, ton
     return buildLocalFallbackScript({ appName, description, cta, tone });
   }
 
-  const selectedModel = ALLOWED_MODELS.includes(model) ? model : 'gemini-2.5-flash';
+  const selectedModel = ALLOWED_MODELS.includes(model) ? model : 'gemini-3.8-flash';
   const wordCount = countWords(description);
   const suggestedScenes = wordCount < 35 ? 'entre 3 y 4 escenas' : wordCount < 85 ? 'entre 5 y 7 escenas' : 'entre 7 y 11 escenas';
 
@@ -243,7 +243,7 @@ async function generateAudioWithGeminiTTS({ apiKey, text, voice }) {
   }
 
   const voiceName = ALLOWED_VOICES.includes(voice) ? voice : 'Aoede';
-  const ttsModel = 'gemini-2.5-flash-preview-tts';
+  const ttsModel = 'gemini-3.8-flash-tts';
   const url = `${GEMINI_API_BASE}/${ttsModel}:generateContent?key=${encodeURIComponent(apiKey)}`;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -324,7 +324,7 @@ async function testGeminiConnection({ apiKey, model }) {
   if (!apiKey) {
     return { ok: false, message: 'No hay ninguna clave de Google Gemini guardada ni en GEMINI_API_KEY.' };
   }
-  const selectedModel = ALLOWED_MODELS.includes(model) ? model : 'gemini-2.5-flash';
+  const selectedModel = ALLOWED_MODELS.includes(model) ? model : 'gemini-3.8-flash';
   const url = `${GEMINI_API_BASE}/${selectedModel}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
   const response = await fetchWithTimeout(url, {

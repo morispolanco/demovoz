@@ -179,7 +179,7 @@ app.post('/api/generate-script', async (req, res) => {
 
     const config = await getAdminConfigRow();
     const { key: apiKey } = resolveGeminiKey(config);
-    const model = config?.gemini_model || 'gemini-2.5-flash';
+    const model = config?.gemini_model || 'gemini-3.8-flash';
 
     let result;
     try {
@@ -351,7 +351,7 @@ app.get('/api/admin/config', requireAdmin, async (_req, res) => {
       watermark_text: config.watermark_text,
       promo_banner_enabled: config.promo_banner_enabled,
       promo_banner_text: config.promo_banner_text,
-      gemini_model: config.gemini_model || 'gemini-2.5-flash',
+      gemini_model: config.gemini_model || 'gemini-3.8-flash',
       gemini_voice: config.gemini_voice || 'Aoede',
       gemini_key_masked: maskApiKey(keyInfo.key),
       gemini_key_source: keyInfo.source,
@@ -380,7 +380,7 @@ app.put('/api/admin/config', requireAdmin, async (req, res) => {
     } = req.body || {};
 
     const cleanPhone = String(whatsapp_number || '').replace(/[^\d]/g, '') || '50212345678';
-    const model = ALLOWED_MODELS.includes(gemini_model) ? gemini_model : 'gemini-2.5-flash';
+    const model = ALLOWED_MODELS.includes(gemini_model) ? gemini_model : 'gemini-3.8-flash';
     const voice = ALLOWED_VOICES.includes(gemini_voice) ? gemini_voice : 'Aoede';
 
     const current = await getAdminConfigRow();
@@ -462,7 +462,7 @@ app.post('/api/admin/test-gemini', requireAdmin, async (req, res) => {
     const config = await getAdminConfigRow();
     const overrideKey = String(req.body?.apiKey || '').trim();
     const keyToUse = overrideKey || resolveGeminiKey(config).key;
-    const model = req.body?.model || config?.gemini_model || 'gemini-2.5-flash';
+    const model = req.body?.model || config?.gemini_model || 'gemini-3.8-flash';
     const result = await testGeminiConnection({ apiKey: keyToUse, model });
     res.json(result);
   } catch (err) {

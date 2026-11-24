@@ -63,7 +63,7 @@ async function _runInitDatabase() {
         promo_banner_enabled BOOLEAN NOT NULL DEFAULT FALSE,
         promo_banner_text TEXT NOT NULL DEFAULT 'Crea vídeos tutoriales profesionales en minutos con inteligencia artificial.',
         gemini_api_key TEXT NOT NULL DEFAULT '',
-        gemini_model TEXT NOT NULL DEFAULT 'gemini-2.5-flash',
+        gemini_model TEXT NOT NULL DEFAULT 'gemini-3.8-flash',
         gemini_voice TEXT NOT NULL DEFAULT 'Aoede',
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         CONSTRAINT single_config_row CHECK (id = 1)
@@ -71,8 +71,9 @@ async function _runInitDatabase() {
     `);
 
     await pool.query(`ALTER TABLE admin_config ADD COLUMN IF NOT EXISTS gemini_api_key TEXT NOT NULL DEFAULT '';`);
-    await pool.query(`ALTER TABLE admin_config ADD COLUMN IF NOT EXISTS gemini_model TEXT NOT NULL DEFAULT 'gemini-2.5-flash';`);
+    await pool.query(`ALTER TABLE admin_config ADD COLUMN IF NOT EXISTS gemini_model TEXT NOT NULL DEFAULT 'gemini-3.8-flash';`);
     await pool.query(`ALTER TABLE admin_config ADD COLUMN IF NOT EXISTS gemini_voice TEXT NOT NULL DEFAULT 'Aoede';`);
+    await pool.query(`UPDATE admin_config SET gemini_model = 'gemini-3.8-flash' WHERE gemini_model IN ('gemini-2.5-flash', 'gemini-2.5-pro');`);
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS export_codes (
@@ -122,7 +123,7 @@ async function _runInitDatabase() {
           'Hola, acabo de crear un vídeo tutorial para «{app}» ({duracion}) en DemoVoz. ¿Podrías enviarme un código de descarga MP4?',
           'Creado con DemoVoz',
           'Crea vídeos tutoriales profesionales en minutos con inteligencia artificial.',
-          'gemini-2.5-flash',
+          'gemini-3.8-flash',
           'Aoede'
         ]
       );
