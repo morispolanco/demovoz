@@ -26,8 +26,15 @@ const PORT = process.env.PORT || 3000;
 const SESSION_COOKIE = 'demovoz_admin_session';
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.createHash('sha256').update(process.env.DATABASE_URL || 'demovoz-dev-secret').digest('hex');
 
+app.set('trust proxy', 1);
 app.use(express.json({ limit: '5mb' }));
 app.use(cookieParser());
+
+// En Vercel serverless cada instancia en frío debe inicializar el pool de Neon antes de consultar
+app.use('/api', async (_req, _res, next) => {
+  await initDatabase();
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 function maskApiKey(key) {
@@ -73,6 +80,8 @@ async function isRequestAdmin(req) {
   const session = verifySession(token);
   if (!session || !session.admin) return false;
   try {
+    const ready = await initDatabase();
+    if (!ready) return false;
     const pool = getPool();
     const res = await pool.query('SELECT admin_password_hash FROM admin_config WHERE id = 1');
     if (res.rowCount === 0) return false;
@@ -322,7 +331,7 @@ app.post('/api/admin/login', async (req, res) => {
     res.cookie(SESSION_COOKIE, token, {
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: Boolean(process.env.VERCEL || process.env.NODE_ENV === 'production'),
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
@@ -447,7 +456,7 @@ app.post('/api/admin/password', requireAdmin, async (req, res) => {
     res.cookie(SESSION_COOKIE, token, {
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: Boolean(process.env.VERCEL || process.env.NODE_ENV === 'production'),
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
