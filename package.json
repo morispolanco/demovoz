@@ -1,0 +1,19 @@
+{
+  "name": "demovoz",
+  "version": "1.0.0",
+  "description": "DemoVoz — Generador automático de vídeos tutoriales en español con gráficos animados, narración con Google Gemini y base de datos PostgreSQL en Neon.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
