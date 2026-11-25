@@ -181,13 +181,18 @@
           <!-- Estilo -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <div>
-              <label for="toneSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                Tono de la narración
+              <label for="visualStyleSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                Estilo visual del vídeo
               </label>
-              <select id="toneSelect" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600">
-                <option value="Profesional">Profesional</option>
-                <option value="Dinámico">Dinámico</option>
-                <option value="Didáctico">Didáctico</option>
+              <select id="visualStyleSelect" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600">
+                <option value="modern">Moderno limpio</option>
+                <option value="neobrutal">Neobrutalista</option>
+                <option value="darktech">Oscuro tecnológico</option>
+                <option value="editorial">Editorial elegante</option>
+                <option value="glass">Cristal (Glassmorphism)</option>
+                <option value="retro">Terminal retro</option>
+                <option value="swiss">Minimalista suizo</option>
+                <option value="chalkboard">Pizarra educativa</option>
               </select>
             </div>
             <div>
@@ -199,6 +204,16 @@
                 <option value="emerald">Verde esmeralda</option>
                 <option value="purple">Púrpura creativo</option>
                 <option value="graphite">Gris grafito</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label for="toneSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                Tono de la narración
+              </label>
+              <select id="toneSelect" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600">
+                <option value="Profesional">Profesional</option>
+                <option value="Dinámico">Dinámico</option>
+                <option value="Didáctico">Didáctico</option>
               </select>
             </div>
           </div>
@@ -1368,6 +1383,7 @@
         },
         unlockedForSession: false,
         paletteKey: 'blue',
+        visualStyle: 'modern',
         bgMusicEnabled: true,
         showCaptions: false,
         script: null,
@@ -1704,88 +1720,295 @@
         return 1 - Math.pow(1 - t, 3);
       }
 
-      function drawMockup(c, scene, pal, localTime, duration) {
+      function getVisualTheme(pal, styleKey) {
+        if (styleKey === 'neobrutal') {
+          return {
+            style: 'neobrutal',
+            canvasBg: '#FFFBEB',
+            cardBg: '#FFFFFF',
+            cardAltBg: '#FEF08A',
+            borderColor: '#0F172A',
+            borderWidth: 3.5,
+            radius: 6,
+            hardShadow: true,
+            titleFont: '900 40px Inter, sans-serif',
+            headerFont: '900 26px Inter, sans-serif',
+            bodyFont: '700 19px Inter, sans-serif',
+            textColor: '#0F172A',
+            mutedColor: '#1E293B',
+            badgeBg: '#FDE047',
+            badgeText: '#0F172A',
+            trackBg: '#E2E8F0',
+            accentFill: pal.primary,
+            accentSoft: '#FEF08A'
+          };
+        }
+        if (styleKey === 'darktech') {
+          return {
+            style: 'darktech',
+            canvasBg: '#0B1120',
+            cardBg: '#1E293B',
+            cardAltBg: '#0F172A',
+            borderColor: '#334155',
+            borderWidth: 1.5,
+            radius: 18,
+            hardShadow: false,
+            titleFont: '800 40px Inter, sans-serif',
+            headerFont: '800 26px Inter, sans-serif',
+            bodyFont: '600 19px Inter, sans-serif',
+            textColor: '#F8FAFC',
+            mutedColor: '#94A3B8',
+            badgeBg: 'rgba(59, 130, 246, 0.18)',
+            badgeText: '#93C5FD',
+            trackBg: '#1E293B',
+            accentFill: pal.accent,
+            accentSoft: 'rgba(56, 189, 248, 0.14)'
+          };
+        }
+        if (styleKey === 'editorial') {
+          return {
+            style: 'editorial',
+            canvasBg: '#FAF8F5',
+            cardBg: '#FFFFFF',
+            cardAltBg: '#F5F0E8',
+            borderColor: '#D6D3D1',
+            borderWidth: 1.2,
+            radius: 6,
+            hardShadow: false,
+            titleFont: "700 40px Georgia, 'Times New Roman', serif",
+            headerFont: "700 25px Georgia, 'Times New Roman', serif",
+            bodyFont: '500 19px Inter, sans-serif',
+            textColor: '#1C1917',
+            mutedColor: '#57534E',
+            badgeBg: '#F5F0E8',
+            badgeText: '#1C1917',
+            trackBg: '#E7E5E4',
+            accentFill: pal.primaryDark,
+            accentSoft: '#F5F0E8'
+          };
+        }
+        if (styleKey === 'glass') {
+          return {
+            style: 'glass',
+            canvasBg: '#EEF2FF',
+            cardBg: 'rgba(255, 255, 255, 0.78)',
+            cardAltBg: 'rgba(255, 255, 255, 0.55)',
+            borderColor: 'rgba(255, 255, 255, 0.95)',
+            borderWidth: 2,
+            radius: 20,
+            hardShadow: false,
+            titleFont: '800 40px Inter, sans-serif',
+            headerFont: '800 26px Inter, sans-serif',
+            bodyFont: '600 19px Inter, sans-serif',
+            textColor: '#0F172A',
+            mutedColor: '#334155',
+            badgeBg: 'rgba(255, 255, 255, 0.75)',
+            badgeText: pal.primaryDark,
+            trackBg: 'rgba(255, 255, 255, 0.65)',
+            accentFill: pal.primary,
+            accentSoft: 'rgba(255, 255, 255, 0.68)'
+          };
+        }
+        if (styleKey === 'retro') {
+          return {
+            style: 'retro',
+            canvasBg: '#06110B',
+            cardBg: '#0B1D13',
+            cardAltBg: '#0F291B',
+            borderColor: '#22C55E',
+            borderWidth: 2,
+            radius: 4,
+            hardShadow: false,
+            titleFont: "700 36px ui-monospace, 'Cascadia Mono', Consolas, monospace",
+            headerFont: "700 24px ui-monospace, 'Cascadia Mono', Consolas, monospace",
+            bodyFont: "600 17px ui-monospace, 'Cascadia Mono', Consolas, monospace",
+            textColor: '#DCFCE7',
+            mutedColor: '#86EFAC',
+            badgeBg: '#052E16',
+            badgeText: '#4ADE80',
+            trackBg: '#14532D',
+            accentFill: '#22C55E',
+            accentSoft: '#052E16'
+          };
+        }
+        if (styleKey === 'swiss') {
+          return {
+            style: 'swiss',
+            canvasBg: '#FFFFFF',
+            cardBg: '#FFFFFF',
+            cardAltBg: '#F8FAFC',
+            borderColor: '#0F172A',
+            borderWidth: 1.5,
+            radius: 0,
+            hardShadow: false,
+            titleFont: '900 40px Inter, Helvetica, Arial, sans-serif',
+            headerFont: '900 25px Inter, Helvetica, Arial, sans-serif',
+            bodyFont: '600 19px Inter, Helvetica, Arial, sans-serif',
+            textColor: '#0F172A',
+            mutedColor: '#334155',
+            badgeBg: '#0F172A',
+            badgeText: '#FFFFFF',
+            trackBg: '#E2E8F0',
+            accentFill: pal.primary,
+            accentSoft: '#F1F5F9'
+          };
+        }
+        if (styleKey === 'chalkboard') {
+          return {
+            style: 'chalkboard',
+            canvasBg: '#14332B',
+            cardBg: 'rgba(255, 255, 255, 0.08)',
+            cardAltBg: 'rgba(255, 255, 255, 0.12)',
+            borderColor: 'rgba(248, 250, 252, 0.42)',
+            borderWidth: 1.8,
+            radius: 10,
+            hardShadow: false,
+            titleFont: "700 40px Georgia, 'Times New Roman', serif",
+            headerFont: "700 25px Georgia, 'Times New Roman', serif",
+            bodyFont: '500 19px Inter, sans-serif',
+            textColor: '#F8FAFC',
+            mutedColor: '#D1FAE5',
+            badgeBg: 'rgba(253, 230, 138, 0.18)',
+            badgeText: '#FDE68A',
+            trackBg: 'rgba(255, 255, 255, 0.18)',
+            accentFill: '#F59E0B',
+            accentSoft: 'rgba(253, 230, 138, 0.15)'
+          };
+        }
+        return {
+          style: 'modern',
+          canvasBg: '#FFFFFF',
+          cardBg: '#FFFFFF',
+          cardAltBg: pal.primarySoft,
+          borderColor: '#E2E8F0',
+          borderWidth: 1.5,
+          radius: 14,
+          hardShadow: false,
+          titleFont: '800 40px Inter, sans-serif',
+          headerFont: '800 26px Inter, sans-serif',
+          bodyFont: '600 20px Inter, sans-serif',
+          textColor: pal.text,
+          mutedColor: pal.muted,
+          badgeBg: pal.primarySoft,
+          badgeText: pal.primaryDark,
+          trackBg: '#E2E8F0',
+          accentFill: pal.primary,
+          accentSoft: pal.primarySoft
+        };
+      }
+
+      function drawStyledBox(c, x, y, w, h, r, fill, theme, { shadowOffset = 6 } = {}) {
+        if (theme.hardShadow) {
+          c.fillStyle = '#0F172A';
+          roundRect(c, x + shadowOffset, y + shadowOffset, w, h, r);
+          c.fill();
+        }
+        c.fillStyle = fill;
+        roundRect(c, x, y, w, h, r);
+        c.fill();
+        c.strokeStyle = theme.borderColor;
+        c.lineWidth = theme.borderWidth;
+        roundRect(c, x, y, w, h, r);
+        c.stroke();
+      }
+
+      function drawMockup(c, scene, pal, theme, localTime, duration) {
         const mx = 740;
         const my = 118;
         const mw = 472;
         const mh = 372;
         const entry = easeOutCubic(localTime / 0.65);
-        const offsetY = (1 - entry) * 28;
+        const offsetY = (1 - entry) * 26;
+        const boxR = theme.style === 'neobrutal' ? 6 : theme.style === 'editorial' ? 8 : 22;
 
         c.save();
         c.globalAlpha = entry;
         c.translate(0, offsetY);
 
-        // Sombra suave
-        c.shadowColor = 'rgba(15, 23, 42, 0.10)';
-        c.shadowBlur = 28;
-        c.shadowOffsetY = 12;
-        c.fillStyle = '#FFFFFF';
-        roundRect(c, mx, my, mw, mh, 24);
+        if (theme.hardShadow) {
+          c.fillStyle = '#0F172A';
+          roundRect(c, mx + 8, my + 8, mw, mh, boxR);
+          c.fill();
+        } else if (theme.style === 'modern') {
+          c.shadowColor = 'rgba(15, 23, 42, 0.10)';
+          c.shadowBlur = 28;
+          c.shadowOffsetY = 12;
+        }
+
+        c.fillStyle = theme.cardBg;
+        roundRect(c, mx, my, mw, mh, boxR);
         c.fill();
         c.shadowColor = 'transparent';
 
-        c.strokeStyle = pal.border;
-        c.lineWidth = 2;
-        roundRect(c, mx, my, mw, mh, 24);
+        c.strokeStyle = theme.style === 'modern' ? pal.border : theme.borderColor;
+        c.lineWidth = theme.style === 'neobrutal' ? 3.5 : 1.8;
+        roundRect(c, mx, my, mw, mh, boxR);
         c.stroke();
 
         // Barra superior de ventana simulada
-        c.fillStyle = pal.primarySoft;
-        roundRect(c, mx + 1, my + 1, mw - 2, 46, 22);
+        c.fillStyle = theme.cardAltBg;
+        roundRect(c, mx + 2, my + 2, mw - 4, 44, Math.max(2, boxR - 2));
         c.fill();
-        c.fillRect(mx + 1, my + 24, mw - 2, 23);
+        c.fillRect(mx + 2, my + 24, mw - 4, 22);
+        if (theme.style === 'neobrutal' || theme.style === 'editorial') {
+          c.strokeStyle = theme.borderColor;
+          c.lineWidth = theme.style === 'neobrutal' ? 3 : 1;
+          c.beginPath();
+          c.moveTo(mx, my + 46);
+          c.lineTo(mx + mw, my + 46);
+          c.stroke();
+        }
 
-        ['#FCA5A5', '#FCD34D', '#86EFAC'].forEach((col, i) => {
+        const dots = theme.style === 'neobrutal' ? ['#EF4444', '#FACC15', '#22C55E'] : ['#FCA5A5', '#FCD34D', '#86EFAC'];
+        dots.forEach((col, i) => {
           c.fillStyle = col;
           c.beginPath();
           c.arc(mx + 26 + i * 18, my + 24, 5.5, 0, Math.PI * 2);
           c.fill();
+          if (theme.style === 'neobrutal') {
+            c.strokeStyle = '#0F172A';
+            c.lineWidth = 1.5;
+            c.stroke();
+          }
         });
 
-        c.fillStyle = pal.muted;
-        c.font = '600 13px Inter, sans-serif';
+        c.fillStyle = theme.mutedColor;
+        c.font = '700 13px Inter, sans-serif';
         c.fillText(state.script?.titulo_app || 'DemoVoz', mx + 92, my + 29);
 
-        // Contenido ilustrativo por tipo de escena
         const pulse = Math.sin(localTime * 2.4) * 0.5 + 0.5;
-        if (scene.tipo === 'intro') {
-          c.fillStyle = pal.primarySoft;
-          roundRect(c, mx + 32, my + 74, mw - 64, 148, 18);
-          c.fill();
+        const innerR = theme.style === 'neobrutal' ? 4 : theme.style === 'editorial' ? 6 : 16;
 
+        if (scene.tipo === 'intro') {
+          drawStyledBox(c, mx + 32, my + 74, mw - 64, 148, innerR, theme.accentSoft, theme, { shadowOffset: 4 });
           c.font = '64px Inter, sans-serif';
           c.textAlign = 'center';
-          c.fillText(scene.icono || '🚀', mx + mw / 2, my + 158);
+          c.fillText(scene.icono || '🚀', mx + mw / 2, my + 160);
           c.textAlign = 'left';
 
-          c.fillStyle = pal.primary;
-          roundRect(c, mx + 110, my + 248, mw - 220, 48, 14);
-          c.fill();
+          drawStyledBox(c, mx + 110, my + 248, mw - 220, 48, innerR, theme.accentFill, theme, { shadowOffset: 4 });
           c.fillStyle = '#FFFFFF';
           c.font = '700 17px Inter, sans-serif';
           c.textAlign = 'center';
           c.fillText('Inicio rápido', mx + mw / 2, my + 278);
           c.textAlign = 'left';
 
-          c.fillStyle = '#E2E8F0';
+          c.fillStyle = theme.trackBg;
           roundRect(c, mx + 64, my + 318, (mw - 128) * (0.55 + 0.45 * entry), 12, 6);
           c.fill();
         } else if (scene.tipo === 'problema') {
           const items = [
             { label: 'Procesos manuales lentos', pct: 0.82, col: '#F59E0B' },
             { label: 'Datos dispersos en hojas', pct: 0.68, col: '#EF4444' },
-            { label: 'Solución centralizada', pct: 0.95, col: pal.primary }
+            { label: 'Solución centralizada', pct: 0.95, col: theme.accentFill }
           ];
           items.forEach((it, idx) => {
-            const iy = my + 76 + idx * 92;
-            c.fillStyle = idx === 2 ? pal.primarySoft : '#F8FAFC';
-            roundRect(c, mx + 26, iy, mw - 52, 74, 14);
-            c.fill();
-            c.fillStyle = pal.text;
+            const iy = my + 74 + idx * 92;
+            drawStyledBox(c, mx + 26, iy, mw - 52, 74, innerR, idx === 2 ? theme.accentSoft : theme.cardBg, theme, { shadowOffset: 4 });
+            c.fillStyle = theme.textColor;
             c.font = '600 15px Inter, sans-serif';
             c.fillText(it.label, mx + 44, iy + 28);
-            c.fillStyle = '#E2E8F0';
+            c.fillStyle = theme.trackBg;
             roundRect(c, mx + 44, iy + 44, mw - 88, 12, 6);
             c.fill();
             c.fillStyle = it.col;
@@ -1793,76 +2016,67 @@
             c.fill();
           });
         } else if (scene.tipo === 'beneficio') {
-          // Tarjetas KPI + barras ascendentes
           const bars = [0.42, 0.58, 0.72, 0.88, 0.98];
-          c.fillStyle = pal.primarySoft;
-          roundRect(c, mx + 26, my + 72, mw - 52, 78, 16);
-          c.fill();
-          c.fillStyle = pal.primary;
+          drawStyledBox(c, mx + 26, my + 72, mw - 52, 78, innerR, theme.accentSoft, theme, { shadowOffset: 4 });
+          c.fillStyle = theme.style === 'neobrutal' ? '#0F172A' : theme.accentFill;
           c.font = '800 28px Inter, sans-serif';
           c.fillText('+100 % claridad', mx + 48, my + 120);
 
-          const baseY = my + 328;
+          const baseY = my + 332;
           bars.forEach((h, i) => {
             const bw = 54;
             const bx = mx + 48 + i * 78;
             const bh = 145 * h * easeOutCubic((localTime - i * 0.1) / 0.65);
-            c.fillStyle = i === bars.length - 1 ? pal.primary : pal.accent;
-            c.globalAlpha = entry * (i === bars.length - 1 ? 1 : 0.45 + i * 0.12);
-            roundRect(c, bx, baseY - bh, bw, Math.max(12, bh), 10);
+            c.fillStyle = i === bars.length - 1 ? theme.accentFill : pal.accent;
+            c.globalAlpha = entry * (theme.style === 'neobrutal' ? 1 : (i === bars.length - 1 ? 1 : 0.45 + i * 0.12));
+            roundRect(c, bx, baseY - bh, bw, Math.max(12, bh), theme.style === 'neobrutal' ? 3 : 10);
             c.fill();
+            if (theme.style === 'neobrutal') {
+              c.strokeStyle = '#0F172A';
+              c.lineWidth = 2.5;
+              c.stroke();
+            }
           });
           c.globalAlpha = entry;
         } else if (scene.tipo === 'cierre') {
-          c.fillStyle = pal.primarySoft;
-          roundRect(c, mx + 32, my + 78, mw - 64, 152, 20);
-          c.fill();
+          drawStyledBox(c, mx + 32, my + 78, mw - 64, 152, innerR, theme.accentSoft, theme, { shadowOffset: 4 });
           c.font = '60px Inter, sans-serif';
           c.textAlign = 'center';
           c.fillText(scene.icono || '✨', mx + mw / 2, my + 150);
-          c.fillStyle = pal.text;
+          c.fillStyle = theme.textColor;
           c.font = '700 20px Inter, sans-serif';
           c.fillText(state.script?.titulo_app || 'DemoVoz', mx + mw / 2, my + 198);
 
-          c.fillStyle = pal.primary;
-          roundRect(c, mx + 52, my + 256, mw - 104, 58, 16);
-          c.fill();
+          drawStyledBox(c, mx + 52, my + 256, mw - 104, 58, innerR, theme.accentFill, theme, { shadowOffset: 4 });
           c.fillStyle = '#FFFFFF';
           c.font = '700 18px Inter, sans-serif';
           const ctaText = scene.puntos_clave?.[0] || 'Comienza hoy mismo';
           c.fillText(ctaText.length > 34 ? `${ctaText.slice(0, 31)}…` : ctaText, mx + mw / 2, my + 291);
           c.textAlign = 'left';
         } else {
-          // 'funcion': panel interactivo con módulos y progreso
-          c.fillStyle = '#F8FAFC';
-          roundRect(c, mx + 26, my + 72, 130, 270, 14);
-          c.fill();
+          drawStyledBox(c, mx + 26, my + 72, 130, 270, innerR, theme.cardAltBg, theme, { shadowOffset: 4 });
           for (let i = 0; i < 4; i++) {
-            c.fillStyle = i === Math.floor((localTime / Math.max(1, duration)) * 4) % 4 ? pal.primary : '#CBD5E1';
-            roundRect(c, mx + 40, my + 94 + i * 44, 102, 24, 8);
+            c.fillStyle = i === Math.floor((localTime / Math.max(1, duration)) * 4) % 4 ? theme.accentFill : (theme.style === 'darktech' ? '#334155' : '#CBD5E1');
+            roundRect(c, mx + 40, my + 94 + i * 44, 102, 24, theme.style === 'neobrutal' ? 3 : 8);
             c.fill();
           }
 
-          c.fillStyle = pal.primarySoft;
-          roundRect(c, mx + 174, my + 72, mw - 200, 120, 14);
-          c.fill();
+          drawStyledBox(c, mx + 174, my + 72, mw - 200, 120, innerR, theme.accentSoft, theme, { shadowOffset: 4 });
           c.font = '44px Inter, sans-serif';
           c.fillText(scene.icono || '⚙️', mx + 196, my + 142);
-          c.fillStyle = pal.primaryDark;
+          c.fillStyle = theme.textColor;
           c.font = '700 18px Inter, sans-serif';
           c.fillText('Módulo activo', mx + 262, my + 126);
-          c.fillStyle = pal.muted;
+          c.fillStyle = theme.mutedColor;
           c.font = '500 14px Inter, sans-serif';
           c.fillText('Flujo automatizado', mx + 262, my + 150);
 
-          c.fillStyle = '#F8FAFC';
-          roundRect(c, mx + 174, my + 210, mw - 200, 132, 14);
-          c.fill();
+          drawStyledBox(c, mx + 174, my + 210, mw - 200, 132, innerR, theme.cardBg, theme, { shadowOffset: 4 });
           for (let i = 0; i < 3; i++) {
-            c.fillStyle = '#E2E8F0';
+            c.fillStyle = theme.trackBg;
             roundRect(c, mx + 192, my + 232 + i * 34, mw - 236, 14, 7);
             c.fill();
-            c.fillStyle = pal.primary;
+            c.fillStyle = theme.accentFill;
             const wBar = (mw - 236) * (0.4 + ((i + 1) * 0.16) + pulse * 0.08);
             roundRect(c, mx + 192, my + 232 + i * 34, Math.min(mw - 236, wBar), 14, 7);
             c.fill();
@@ -1874,6 +2088,7 @@
 
       function renderCanvasFrame(tSec, { hideWatermark = false } = {}) {
         const pal = PALETTES[state.paletteKey] || PALETTES.blue;
+        const theme = getVisualTheme(pal, state.visualStyle || 'modern');
         const totalDur = getTotalDuration();
         const clampedT = Math.min(totalDur, Math.max(0, tSec));
         const { index, localTime: rawLocalTime, duration } = getSceneAtTime(clampedT);
@@ -1887,55 +2102,134 @@
           narracion_es: 'Describe tu aplicación para generar un vídeo tutorial animado.'
         };
 
-        // 1. Fondo claro con formas geométricas suaves animadas
-        ctx.fillStyle = '#FFFFFF';
+        // 1. Fondo adaptado a cada estilo visual
+        ctx.fillStyle = theme.canvasBg;
         ctx.fillRect(0, 0, 1280, 720);
-
         const drift = Math.sin(clampedT * 0.65) * 18;
+
         ctx.save();
-        ctx.fillStyle = pal.primarySoft;
-        ctx.beginPath();
-        ctx.arc(1140 + drift, 110 - drift * 0.4, 240, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(130 - drift * 0.5, 620 + drift * 0.3, 190, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.strokeStyle = pal.border;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(1140 + drift, 110 - drift * 0.4, 285, 0, Math.PI * 2);
-        ctx.stroke();
+        if (theme.style === 'neobrutal') {
+          // Patrón punteado neobrutalista + formas geométricas con borde negro grueso
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.10)';
+          for (let gx = 32; gx < 1280; gx += 44) {
+            for (let gy = 32; gy < 720; gy += 44) {
+              ctx.beginPath();
+              ctx.arc(gx, gy, 2, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+          ctx.fillStyle = '#FDE047';
+          ctx.strokeStyle = '#0F172A';
+          ctx.lineWidth = 3.5;
+          ctx.fillRect(1140 + drift * 0.4, 24, 110, 110);
+          ctx.strokeRect(1140 + drift * 0.4, 24, 110, 110);
+          ctx.fillStyle = pal.primary;
+          ctx.beginPath();
+          ctx.arc(72, 650 + drift * 0.3, 46, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        } else if (theme.style === 'darktech') {
+          // Fondo oscuro con rejilla sutil y halo luminoso
+          ctx.strokeStyle = 'rgba(148, 163, 184, 0.07)';
+          ctx.lineWidth = 1;
+          for (let gx = 0; gx < 1280; gx += 64) {
+            ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, 720); ctx.stroke();
+          }
+          for (let gy = 0; gy < 720; gy += 64) {
+            ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(1280, gy); ctx.stroke();
+          }
+          const grad = ctx.createRadialGradient(1080 + drift, 140, 20, 1080 + drift, 140, 340);
+          grad.addColorStop(0, 'rgba(37, 99, 235, 0.28)');
+          grad.addColorStop(1, 'rgba(11, 17, 32, 0)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, 1280, 720);
+        } else if (theme.style === 'editorial') {
+          // Filetes editoriales clásicos
+          ctx.strokeStyle = '#D6D3D1';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(64, 98);
+          ctx.lineTo(1216, 98);
+          ctx.moveTo(64, 652);
+          ctx.lineTo(1216, 652);
+          ctx.stroke();
+        } else if (theme.style === 'glass') {
+          const grad = ctx.createLinearGradient(0, 0, 1280, 720);
+          grad.addColorStop(0, '#E0E7FF');
+          grad.addColorStop(0.5, '#FDF2F8');
+          grad.addColorStop(1, '#ECFEFF');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, 1280, 720);
+          const orb1 = ctx.createRadialGradient(240 + drift, 140, 20, 240 + drift, 140, 260);
+          orb1.addColorStop(0, 'rgba(99, 102, 241, 0.32)');
+          orb1.addColorStop(1, 'rgba(99, 102, 241, 0)');
+          ctx.fillStyle = orb1;
+          ctx.fillRect(0, 0, 1280, 720);
+          const orb2 = ctx.createRadialGradient(1060 - drift, 560, 20, 1060 - drift, 560, 280);
+          orb2.addColorStop(0, 'rgba(236, 72, 153, 0.25)');
+          orb2.addColorStop(1, 'rgba(236, 72, 153, 0)');
+          ctx.fillStyle = orb2;
+          ctx.fillRect(0, 0, 1280, 720);
+        } else if (theme.style === 'retro') {
+          ctx.fillStyle = 'rgba(34, 197, 94, 0.06)';
+          for (let sy = 0; sy < 720; sy += 6) {
+            ctx.fillRect(0, sy, 1280, 2);
+          }
+          ctx.strokeStyle = 'rgba(34, 197, 94, 0.35)';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(20, 20, 1240, 680);
+        } else if (theme.style === 'swiss') {
+          ctx.fillStyle = pal.primary;
+          ctx.fillRect(0, 0, 22, 720);
+          ctx.strokeStyle = '#0F172A';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(64, 98);
+          ctx.lineTo(1216, 98);
+          ctx.stroke();
+        } else if (theme.style === 'chalkboard') {
+          ctx.strokeStyle = 'rgba(253, 230, 138, 0.28)';
+          ctx.lineWidth = 3;
+          ctx.setLineDash([12, 8]);
+          roundRect(ctx, 22, 22, 1236, 676, 16);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        } else {
+          // Moderno limpio
+          ctx.fillStyle = pal.primarySoft;
+          ctx.beginPath();
+          ctx.arc(1140 + drift, 110 - drift * 0.4, 240, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(130 - drift * 0.5, 620 + drift * 0.3, 190, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = pal.border;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(1140 + drift, 110 - drift * 0.4, 285, 0, Math.PI * 2);
+          ctx.stroke();
+        }
         ctx.restore();
 
         // 2. Encabezado con nombre de la app y etiqueta de escena
-        ctx.fillStyle = pal.primary;
-        roundRect(ctx, 64, 44, 44, 44, 12);
-        ctx.fill();
+        drawStyledBox(ctx, 64, 42, 44, 44, theme.style === 'neobrutal' ? 4 : 12, theme.accentFill, theme, { shadowOffset: 4 });
         ctx.fillStyle = '#FFFFFF';
         ctx.font = '700 22px Inter, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('▶', 87, 73);
+        ctx.fillText('▶', 87, 71);
         ctx.textAlign = 'left';
 
-        ctx.fillStyle = pal.text;
-        ctx.font = '800 26px Inter, sans-serif';
-        ctx.fillText(state.script?.titulo_app || 'DemoVoz', 124, 75);
+        ctx.fillStyle = theme.textColor;
+        ctx.font = theme.headerFont;
+        ctx.fillText(state.script?.titulo_app || 'DemoVoz', 124, 73);
 
-        // Insignia de escena a la derecha
-        const badgeLabel = `${SCENE_TYPE_LABELS[scene.tipo] || 'Escena'} · ${index + 1}/${state.script?.escenas?.length || 1}`;
-        ctx.font = '600 15px Inter, sans-serif';
+        const rawBadge = `${SCENE_TYPE_LABELS[scene.tipo] || 'Escena'} · ${index + 1}/${state.script?.escenas?.length || 1}`;
+        const badgeLabel = theme.style === 'neobrutal' ? rawBadge.toUpperCase() : rawBadge;
+        ctx.font = theme.style === 'neobrutal' ? '800 14px Inter, sans-serif' : '600 15px Inter, sans-serif';
         const bw = ctx.measureText(badgeLabel).width + 32;
-        ctx.fillStyle = pal.primarySoft;
-        roundRect(ctx, 1216 - bw, 48, bw, 36, 18);
-        ctx.fill();
-        ctx.strokeStyle = pal.border;
-        ctx.lineWidth = 1.5;
-        roundRect(ctx, 1216 - bw, 48, bw, 36, 18);
-        ctx.stroke();
-        ctx.fillStyle = pal.primaryDark;
-        ctx.fillText(badgeLabel, 1216 - bw + 16, 71);
+        drawStyledBox(ctx, 1216 - bw, 46, bw, 36, theme.style === 'neobrutal' ? 4 : 18, theme.badgeBg, theme, { shadowOffset: 4 });
+        ctx.fillStyle = theme.badgeText;
+        ctx.fillText(badgeLabel, 1216 - bw + 16, 69);
 
         // 3. Columna izquierda: tarjeta animada de la escena
         const titleEase = easeOutCubic(localTime / 0.5);
@@ -1943,18 +2237,14 @@
         ctx.globalAlpha = titleEase;
         ctx.translate(0, (1 - titleEase) * 20);
 
-        // Emoji badge
-        ctx.fillStyle = pal.primarySoft;
-        roundRect(ctx, 64, 118, 66, 66, 18);
-        ctx.fill();
+        drawStyledBox(ctx, 64, 118, 66, 66, theme.style === 'neobrutal' ? 4 : 18, theme.accentSoft, theme, { shadowOffset: 5 });
         ctx.font = '36px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(scene.icono || '✨', 97, 164);
         ctx.textAlign = 'left';
 
-        // Título gráfico (espaciado limpio sin chocar con viñetas ni borde inferior)
-        ctx.fillStyle = pal.text;
-        ctx.font = '800 40px Inter, sans-serif';
+        ctx.fillStyle = theme.textColor;
+        ctx.font = theme.titleFont;
         const titleLines = wrapLines(ctx, scene.titulo_grafico, 620, 2);
         titleLines.forEach((line, i) => {
           ctx.fillText(line, 64, 232 + i * 48);
@@ -1972,33 +2262,32 @@
           ctx.globalAlpha = bEase;
           ctx.translate((1 - bEase) * -22, 0);
 
-          ctx.fillStyle = '#FFFFFF';
-          roundRect(ctx, 64, by, 624, 52, 14);
-          ctx.fill();
-          ctx.strokeStyle = '#E2E8F0';
-          ctx.lineWidth = 1.5;
-          roundRect(ctx, 64, by, 624, 52, 14);
-          ctx.stroke();
+          drawStyledBox(ctx, 64, by, 624, 50, theme.radius, theme.cardBg, theme, { shadowOffset: 5 });
 
-          ctx.fillStyle = pal.primary;
+          ctx.fillStyle = theme.accentFill;
           ctx.beginPath();
-          ctx.arc(92, by + 26, 11, 0, Math.PI * 2);
+          ctx.arc(92, by + 25, 11, 0, Math.PI * 2);
           ctx.fill();
+          if (theme.style === 'neobrutal') {
+            ctx.strokeStyle = '#0F172A';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
           ctx.fillStyle = '#FFFFFF';
           ctx.font = '700 14px Inter, sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText('✓', 92, by + 31);
+          ctx.fillText('✓', 92, by + 30);
           ctx.textAlign = 'left';
 
-          ctx.fillStyle = pal.text;
-          ctx.font = '600 20px Inter, sans-serif';
+          ctx.fillStyle = theme.textColor;
+          ctx.font = theme.bodyFont;
           const shortBullet = bullet.length > 52 ? `${bullet.slice(0, 49)}…` : bullet;
-          ctx.fillText(shortBullet, 118, by + 33);
+          ctx.fillText(shortBullet, 118, by + 32);
           ctx.restore();
         });
 
         // 4. Columna derecha: maqueta visual simplificada
-        drawMockup(ctx, scene, pal, localTime, duration);
+        drawMockup(ctx, scene, pal, theme, localTime, duration);
 
         // 5. Actualizar panel de narración aparte de las diapositivas
         const narrLabelEl = $('narrationPanelLabel');
@@ -2008,12 +2297,11 @@
           narrTextEl.textContent = scene.narracion_es || '';
         }
 
-        // Subtítulos opcionales sobre el lienzo (solo si el usuario los activa, en zona reservada sin tapar texto)
+        // Subtítulos opcionales sobre el lienzo (solo si el usuario los activa)
         if (state.showCaptions && scene.narracion_es) {
-          ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
-          roundRect(ctx, 64, 578, 1152, 76, 16);
+          ctx.fillStyle = theme.style === 'neobrutal' ? '#0F172A' : 'rgba(15, 23, 42, 0.92)';
+          roundRect(ctx, 64, 578, 1152, 76, theme.style === 'neobrutal' ? 4 : 16);
           ctx.fill();
-
           ctx.fillStyle = '#F8FAFC';
           ctx.font = '500 20px Inter, sans-serif';
           const subLines = wrapLines(ctx, scene.narracion_es, 1080, 2);
@@ -2027,23 +2315,29 @@
 
         // 6. Barra de progreso y tiempo dinámico exacto
         const progress = totalDur > 0 ? clampedT / totalDur : 0;
-        ctx.fillStyle = '#E2E8F0';
-        roundRect(ctx, 64, 676, 980, 10, 5);
+        ctx.fillStyle = theme.trackBg;
+        roundRect(ctx, 64, 676, 980, 12, theme.style === 'neobrutal' ? 3 : 6);
         ctx.fill();
-        ctx.fillStyle = pal.primary;
-        roundRect(ctx, 64, 676, Math.max(10, 980 * progress), 10, 5);
+        ctx.fillStyle = theme.accentFill;
+        roundRect(ctx, 64, 676, Math.max(12, 980 * progress), 12, theme.style === 'neobrutal' ? 3 : 6);
         ctx.fill();
+        if (theme.style === 'neobrutal') {
+          ctx.strokeStyle = '#0F172A';
+          ctx.lineWidth = 2.5;
+          roundRect(ctx, 64, 676, 980, 12, 3);
+          ctx.stroke();
+        }
 
-        ctx.fillStyle = pal.muted;
-        ctx.font = '600 16px Inter, sans-serif';
+        ctx.fillStyle = theme.mutedColor;
+        ctx.font = '700 16px Inter, sans-serif';
         ctx.textAlign = 'right';
-        ctx.fillText(`${formatTime(clampedT)} / ${formatTime(totalDur)}`, 1216, 687);
+        ctx.fillText(`${formatTime(clampedT)} / ${formatTime(totalDur)}`, 1216, 688);
         ctx.textAlign = 'left';
 
         // 7. Marca de agua discreta para usuarios regulares (omitida para admin)
         const showWatermark = !hideWatermark && !state.publicConfig.is_admin && state.publicConfig.watermark_text;
         if (showWatermark) {
-          ctx.fillStyle = 'rgba(15, 23, 42, 0.42)';
+          ctx.fillStyle = ['darktech', 'retro', 'chalkboard'].includes(theme.style) ? 'rgba(248, 250, 252, 0.48)' : 'rgba(15, 23, 42, 0.42)';
           ctx.font = '600 14px Inter, sans-serif';
           ctx.textAlign = 'right';
           ctx.fillText(state.publicConfig.watermark_text, 1216, state.showCaptions ? 566 : 656);
@@ -2794,6 +3088,10 @@
 
       function wireEvents() {
         $('appDescInput').addEventListener('input', updateWordCounter);
+        $('visualStyleSelect').addEventListener('change', (ev) => {
+          state.visualStyle = ev.target.value;
+          renderCanvasFrame(state.playTimeSec);
+        });
         $('paletteSelect').addEventListener('change', (ev) => {
           state.paletteKey = ev.target.value;
           renderCanvasFrame(state.playTimeSec);
